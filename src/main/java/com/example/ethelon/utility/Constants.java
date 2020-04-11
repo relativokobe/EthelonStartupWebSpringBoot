@@ -1,6 +1,7 @@
 package com.example.ethelon.utility;
 
 import com.example.ethelon.model.Skill;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,5 +32,13 @@ public class Constants {
         skills.add(Skill.Charity);
 
         return skills;
+    }
+
+    /**
+     * Function to generate ID
+     * @return ID generated
+     */
+    public static String generateId(){
+        return RandomStringUtils.random(7, true, true);
     }
 }

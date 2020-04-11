@@ -75,10 +75,10 @@ public class UserController {
         final String fcmToken = request.getParameter("fcm_token");
         final String location = request.getParameter("location");
         final String imageUrl = request.getParameter("image_url");
-        final String userId = generateId();
+        final String userId = Constants.generateId();
         final int age = Integer.parseInt(request.getParameter("age"));
         final String HashedPassword =  HashPasswordUtility.getHashPassword(password);
-        final String volunteerId = generateId();
+        final String volunteerId = Constants.generateId();
         //FIXME temporary
         final String apiToken = userId;
         if(StringUtils.isAnyEmpty(name, role, fcmToken)){
@@ -114,14 +114,6 @@ public class UserController {
         } catch (final IOException e) {
             System.out.println("Error writing to Response. " + e.toString());
         }
-    }
-
-    /**
-     * Function to generate ID
-     * @return ID generated
-     */
-    private String generateId(){
-        return RandomStringUtils.random(7, true, true);
     }
 
 }
