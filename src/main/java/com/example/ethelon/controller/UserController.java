@@ -1,5 +1,6 @@
 package com.example.ethelon.controller;
 
+import com.example.ethelon.model.User;
 import com.example.ethelon.model.Volunteer;
 import com.example.ethelon.service.UserService;
 import com.example.ethelon.service.VolunteerService;
@@ -114,6 +115,38 @@ public class UserController {
         } catch (final IOException e) {
             System.out.println("Error writing to Response. " + e.toString());
         }
+    }
+
+    /**
+     * '/login' is called from client to login user.
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/login")
+    public void login(final HttpServletRequest request, final HttpServletResponse response){
+        final String email = request.getParameter("email");
+        final String password = request.getParameter("password");
+
+        if(StringUtils.isAnyEmpty(email, password)){
+            //FIXME DO SOMETHING
+        }
+
+        final User user = userService.login(email, password);
+        final JSONObject jsonObject = new JSONObject();
+        //FIXME STATUS IS OK EVEN THOUGH CREDENTIALS ARE INVALID
+        response.setStatus(HttpServletResponse.SC_OK);
+        //Credentials did not match any of the records in the DB
+        if(user == null){
+            jsonObject.put(Constants.MESSAGE, Constants.INVALID_CREDENTIALS);
+        }else{
+            jsonObject.put(Constants.MESSAGE, SUCCESS);
+            jsonObject.put("api_token", user.getApiToken());
+            //FIXME
+            jsonObject.put("volunteer_id", ((Volunteer)user).getVolunteerId());
+            jsonObject.put("name", user.getName());
+            jsonObject.put("image_url", ((Volunteer)user).getImageUrl());
+        }
+        writeResponseData(response, jsonObject);
     }
 
 }

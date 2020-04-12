@@ -14,6 +14,7 @@ public class Constants {
     public static final String EMAIL_ALREADY_EXISTS = "email already exists";
     public static final String SUCCESS = "Success";
     public static final String NOTHING = "Nothing";
+    public static final String INVALID_CREDENTIALS = "Invalid credentials";
     public static final int ZERO = 0;
     /**
      * This function is used to retrieve skills

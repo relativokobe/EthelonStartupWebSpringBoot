@@ -2,6 +2,8 @@ package com.example.ethelon.service;
 
 import com.example.ethelon.dao.UserDAO;
 import com.example.ethelon.model.User;
+import com.example.ethelon.model.Volunteer;
+import com.example.ethelon.utility.HashPasswordUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,25 @@ public class UserService {
      */
     public void insertUserToDb(final User user){
         userDAO.insertUserToDb(user);
+    }
+
+    /**
+     * Function that handles user login
+     * @param email email of the user
+     * @param password password of the user
+     * FIXME JSONObject should be converted to a model for login and register response
+     * @return User retrieved from DB. Returns null if no match.
+     */
+    public User login(final String email, final String password){
+        Volunteer user = userDAO.login(email);
+        //User exists
+        if(user != null){
+            //password did not much
+            if(!HashPasswordUtility.passwordAndHashMatcher(password, user.getPassword())){
+                user = null;
+            }
+        }
+        return user;
     }
 
 }
