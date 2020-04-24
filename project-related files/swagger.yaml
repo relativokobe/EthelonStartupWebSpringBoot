@@ -5,112 +5,186 @@ info:
   title: "Ethelon"
   contact:
     email: "kobearelativo@gmail.com"
-host: "petstore.swagger.io"
-basePath: "/v2"
 tags:
-- name: "User Access"
-  description: "User access to APIs"
+  - name: "User Access"
+    description: "User access to APIs"
+  - name: "Acitivities Interaction"
+    description: "APIs related to Activities"
 schemes:
-- "https"
-- "http"  
+  - "https"
+  - "http"
 paths:
   /register:
     post:
       tags:
-      - "User Access"
+        - "User Access"
       summary: "Register a new user to the DB "
       description: ""
       operationId: "registerUser"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "email"
-        in: "path"
-        description: "Email of the user to be reigistered"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "path"
-        description: "Password of the user to be reigistered"
-        required: true
-        type: "string"
-      - name: "name"
-        in: "path"
-        description: "Name of the user to be reigistered"
-        required: true
-        type: "string"
-      - name: "role"
-        in: "path"
-        description: "Role of the user to be reigistered"
-        required: true
-        type: "string"  
-      - name: "location"
-        in: "path"
-        description: "location of the user to be reigistered"
-        required: true
-        type: "string"  
-      - name: "image_url"
-        in: "path"
-        description: "Display image url of the user to be reigistered"
-        required: true
-        type: "string"
-      - name: "fcm_token"
-        in: "path"
-        description: "fcm_token of the user to be reigistered"
-        required: true
-        type: "string"
-      - name: "age"
-        in: "path"
-        type: "string"    
-        description: "Age of the user to be reigistered"
-        required: true
+        - name: "email"
+          in: "path"
+          description: "Email of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "password"
+          in: "path"
+          description: "Password of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "name"
+          in: "path"
+          description: "Name of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "role"
+          in: "path"
+          description: "Role of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "location"
+          in: "path"
+          description: "location of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "image_url"
+          in: "path"
+          description: "Display image url of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "fcm_token"
+          in: "path"
+          description: "fcm_token of the user to be reigistered"
+          required: true
+          type: "string"
+        - name: "age"
+          in: "path"
+          type: "string"
+          description: "Age of the user to be reigistered"
+          required: true
       responses:
-        200: 
-           description: "Status is always 200 (Needs to be fixed)"
-           schema:
-              $ref: "#/definitions/RegisterResponse"
+        200:
+          description: "Status is always 200 (Needs to be fixed)"
+          schema:
+            $ref: "#/definitions/RegisterResponse"
   /login:
     post:
       tags:
-      - "User Access"
+        - "User Access"
       summary: "User login to access APIs"
       description: ""
       operationId: "loginUser"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"    
+        - "application/json"
       parameters:
-      - name: "email"
-        in: "path"
-        description: "Email of the user to login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "path"
-        description: "Password of the user to login"
-        required: true
-        type: "string"
+        - name: "email"
+          in: "path"
+          description: "Email of the user to login"
+          required: true
+          type: "string"
+        - name: "password"
+          in: "path"
+          description: "Password of the user to login"
+          required: true
+          type: "string"
       responses:
         200:
-           description: "Status is always 200 (Needs to be fixed)"
-           schema:
-              $ref: "#/definitions/LoginResponse"            
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
+          description: "Status is always 200 (Needs to be fixed)"
+          schema:
+            $ref: "#/definitions/LoginResponse"
+  /getallactivitiesdone:
+    post:
+      tags:
+        - "Acitivities Interaction"
+      summary: "Get activities for Volunteer in home screen"
+      description: ""
+      operationId: "getallactivitiesdone"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "volunteer_id"
+          in: "path"
+          description: "ID of the volunteer"
+          required: true
+          type: "string"
+        - name: "offset"
+          in: "path"
+          description: "Offset of the activities to be retrieved"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed)"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/Activity'
 definitions:
+  Activity:
+    type: "object"
+    properties:
+      activity_id:
+        type: "string"
+      foundation_id:
+        type: "string"
+      name:
+        type: "string"
+      image_url:
+        type: "string"
+      imageQr_url:
+        type: "string"
+      description:
+        type: "string"
+      location:
+        type: "string"
+      start_time:
+        type: "string"
+      end_time:
+        type: "string"
+      group:
+        type: "integer"
+      long:
+        type: "string"
+      lat:
+        type: "string"
+      points_equivalent:
+        type: "integer"
+      status:
+        type: "integer"
+      created_at:
+        type: "string"
+      update_at:
+        type: "string"
+      contactperson:
+        type: "string"
+      contact:
+        type: "integer"
+      startDate:
+        type: "string"
+      foundtion_name:
+        type: "integer"
+      volunteerstatus:
+        type: "integer"
+      foundation_img:
+        type: "string"
+      volunteer_count:
+        type: "integer"
+      activity_skills:
+        type: "array"
+        items:
+          $ref: "#/definitions/Skill"
+      activity_criteria:
+        type: "array"
+        items:
+          $ref: '#/definitions/ActivityCriteria'
   RegisterResponse:
     type: "object"
     properties:
@@ -134,6 +208,24 @@ definitions:
       message:
         type: "string"
       image_url:
+        type: "string"
+  Skill:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      activity_id:
+        type: "string"
+      created_at:
+        type: "string"
+      updated_at:
+        type: "string"
+  ActivityCriteria:
+    type: "object"
+    properties:
+      activity_id:
+        type: "string"
+      criteria:
         type: "string"
   ApiResponse:
     type: "object"

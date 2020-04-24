@@ -6,7 +6,6 @@ import com.example.ethelon.service.UserService;
 import com.example.ethelon.service.VolunteerService;
 import com.example.ethelon.utility.Constants;
 import com.example.ethelon.utility.HashPasswordUtility;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

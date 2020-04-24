@@ -16,6 +16,7 @@ public class Constants {
     public static final String NOTHING = "Nothing";
     public static final String INVALID_CREDENTIALS = "Invalid credentials";
     public static final int ZERO = 0;
+    public static final int ONE = 1;
     /**
      * This function is used to retrieve skills
      * FIXME Add a config file that could dynamically add Skills
