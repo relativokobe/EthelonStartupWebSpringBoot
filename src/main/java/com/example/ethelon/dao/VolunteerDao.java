@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Dao of Volunteer.
  * @author Kobe Kyle Relativo
@@ -39,6 +41,31 @@ public class VolunteerDao {
                 "VALUES(?, ?, ?, ?, ?, ?) ";
         final Object[] args =  new Object[]{Constants.NOTHING, volunteerId, Constants.ZERO, Constants.ZERO, skill,
             Constants.ZERO};
+        jdbcTemplate.update(query, args);
+    }
+
+    /**
+     * Function to insert volunteer skills to DB
+     * @param volunteerId id of the volunteer
+     * @param skills list of skills to be inserted to db
+     */
+    public void insertVolunteerSkills(final String volunteerId, final List<String> skills){
+        String query = "INSERT INTO volunteerskills (name, volunteer_id) VALUES ";
+        final int skillSize = skills.size();
+        final int paramsSize = skillSize * 2;
+        final StringBuilder params = new StringBuilder();
+        int indexParamCounter = 0;
+        final Object[] args = new Object[paramsSize];
+        //input params and write query
+        for (int i = 0; i < skillSize; i++) {
+            args[indexParamCounter] = skills.get(i);
+            indexParamCounter++;
+            args[indexParamCounter] = volunteerId;
+            indexParamCounter++;
+            //write query for params
+            params.append("(?, ?)").append(i + 1 == skillSize ? ";" : ",");
+        }
+        query = query + params.toString();
         jdbcTemplate.update(query, args);
     }
 }

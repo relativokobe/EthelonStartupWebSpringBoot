@@ -10,6 +10,8 @@ tags:
     description: "User access to APIs"
   - name: "Acitivities Interaction"
     description: "APIs related to Activities"
+  - name: "Volunteer-related information"
+    description: "APIs related to volunteer's information"
 schemes:
   - "https"
   - "http"
@@ -127,6 +129,42 @@ paths:
             type: "array"
             items:
               $ref: '#/definitions/Activity'
+  /volunteerskills:
+    post:
+      tags:
+        - "Volunteer-related information"
+      summary: "API for volunteer to input his skills"
+      description: ""
+      operationId: "volunteerskills"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "volunteer_id"
+          in: "path"
+          description: "ID of the volunteer"
+          required: true
+          type: "string"
+        - name: "count"
+          in: "path"
+          description: "count of how many skills"
+          required: true
+          type: "integer"
+        - name: "params{num}"
+          in: "path"
+          description: "can have multiple parameters depending on {num}"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed)"
+          schema:
+            $ref: "#/definitions/Success"
+        201:
+          description: "Status is always 200 (Needs to be fixed)"
+          schema:
+            $ref: "#/definitions/Wtf"
 definitions:
   Activity:
     type: "object"
@@ -227,15 +265,15 @@ definitions:
         type: "string"
       criteria:
         type: "string"
-  ApiResponse:
+  Success:
     type: "object"
     properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
+      success:
         type: "string"
-      message:
+  Wtf:
+    type: "object"
+    properties:
+      wtf:
         type: "string"
 externalDocs:
   description: "Find out more about Swagger"

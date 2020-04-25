@@ -42,4 +42,13 @@ public class VolunteerService {
             volunteerDao.insertVolunteerBadge(volunteerId, String.valueOf(skill));
         }
     }
+
+    /**
+     * Function to insert volunteer skills
+     * @param volunteerId id of the volunteer
+     * @param skills list of skills to be inserted
+     */
+    public void insertVolunteerSkills(final String volunteerId, final List<String> skills){
+        volunteerDao.insertVolunteerSkills(volunteerId, skills);
+    }
 }
