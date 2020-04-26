@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.example.ethelon.utility.Constants.SUCCESS;
+import static com.example.ethelon.utility.Constants.writeResponseData;
 
 /**
  * Controller to handle Requests for User interactions
@@ -101,19 +102,6 @@ public class UserController {
         jsonObject.put("name", name);
         jsonObject.put(Constants.MESSAGE, SUCCESS);
         writeResponseData(response, jsonObject);
-    }
-
-    /**
-     * This function is used to write data to Response body using JSON object
-     * @param response where the JSON object data will be written to
-     * @param jsonObject the data to be written to response
-     */
-    private void writeResponseData(final HttpServletResponse response, final JSONObject jsonObject){
-        try {
-            jsonObject.write(response.getWriter());
-        } catch (final IOException e) {
-            System.out.println("Error writing to Response. " + e.toString());
-        }
     }
 
     /**

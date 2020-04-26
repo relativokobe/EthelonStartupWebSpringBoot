@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.example.ethelon.utility.Constants.DEFAULT_VOLUNTEER_POINTS;
+import static com.example.ethelon.utility.Constants.ZERO;
+
 /**
  * Dao of Volunteer.
  * @author Kobe Kyle Relativo
@@ -27,7 +30,7 @@ public class VolunteerDao {
         final String query = "INSERT INTO volunteers(volunteer_id, user_id, location, image_url, fcm_token, gaugeExp, age, points) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?);" ;
         final Object[] args = new Object[]{volunteer.getVolunteerId(), volunteer.getUserId(), volunteer.getLocation(),
-                volunteer.getImageUrl(), volunteer.getFcmToken(), Constants.ZERO, volunteer.getAge(), volunteer.getPoints()};
+                volunteer.getImageUrl(), volunteer.getFcmToken(), ZERO, volunteer.getAge(), volunteer.getPoints()};
         jdbcTemplate.update(query, args);
     }
 
@@ -39,8 +42,8 @@ public class VolunteerDao {
     public void insertVolunteerBadge(final String volunteerId, final String skill){
         final String query = "INSERT INTO volunteerbadges(badge, volunteer_id, gaugeExp, star, skill, points) " +
                 "VALUES(?, ?, ?, ?, ?, ?) ";
-        final Object[] args =  new Object[]{Constants.NOTHING, volunteerId, Constants.ZERO, Constants.ZERO, skill,
-            Constants.ZERO};
+        final Object[] args =  new Object[]{Constants.NOTHING, volunteerId, ZERO, ZERO, skill,
+            ZERO};
         jdbcTemplate.update(query, args);
     }
 
@@ -67,5 +70,35 @@ public class VolunteerDao {
         }
         query = query + params.toString();
         jdbcTemplate.update(query, args);
+    }
+
+    /**
+     * Function to insert to DB the details of volunteer joining the activity
+     * @param volunteerId ID of the volunteer
+     * @param activityId ID of the activity
+     */
+    public void joinActivity(final String volunteerId, final String activityId, final String timeNow){
+        final Object[] args = new Object[]{volunteerId, activityId, DEFAULT_VOLUNTEER_POINTS, ZERO, timeNow};
+        final String query = "INSERT INTO volunteeractivities (volunteer_id, activity_id, points, status, timeIn) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(query, args);
+    }
+
+    /**
+     * Function to check if user already joined activity
+     * @param volunteerId ID of the volunteer
+     * @param activityId ID of the activity
+     * @return boolean if user already joined activity or not
+     */
+    public boolean volunteerJoinedActivity(final String volunteerId, final String activityId){
+        final Object[] args = new Object[]{volunteerId, activityId};
+        final Integer count =  jdbcTemplate.query("SELECT COUNT(*) AS joined_count FROM volunteeractivities " +
+                "WHERE volunteer_id = ? AND activity_id = ?", args, resultSet -> resultSet.next() ?
+                resultSet.getInt("joined_count") : 0);
+        if(count == null){
+            return false;
+        }else{
+            return count > 0;
+        }
     }
 }

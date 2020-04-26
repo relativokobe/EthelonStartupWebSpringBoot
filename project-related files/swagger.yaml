@@ -165,6 +165,33 @@ paths:
           description: "Status is always 200 (Needs to be fixed)"
           schema:
             $ref: "#/definitions/Wtf"
+  /joinactivity:
+    post:
+      tags:
+        - "Volunteer-related information"
+      summary: "API for volunteer join an activity"
+      description: ""
+      operationId: "joinactivity"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "volunteer_id"
+          in: "path"
+          description: "ID of the volunteer"
+          required: true
+          type: "string"
+        - name: "activity_id"
+          in: "path"
+          description: "ID of the activity to join"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed). message value can be success or Already Joined"
+          schema:
+            $ref: "#/definitions/Message"
 definitions:
   Activity:
     type: "object"
@@ -274,6 +301,11 @@ definitions:
     type: "object"
     properties:
       wtf:
+        type: "string"
+  Message:
+    type: "object"
+    properties:
+      message:
         type: "string"
 externalDocs:
   description: "Find out more about Swagger"

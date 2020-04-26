@@ -51,4 +51,23 @@ public class VolunteerService {
     public void insertVolunteerSkills(final String volunteerId, final List<String> skills){
         volunteerDao.insertVolunteerSkills(volunteerId, skills);
     }
+
+    /**
+     * Function to insert volunteer to activity
+     * @param volunteerId ID of the volunteer
+     * @param activityId ID of the activity
+     */
+    public void joinActivity(final String volunteerId, final String activityId){
+        volunteerDao.joinActivity(volunteerId, activityId, Constants.getCurrentTimeInString());
+    }
+
+    /**
+     * Function to check if user already joined activity
+     * @param volunteerId ID of the volunteer
+     * @param activityId ID of the activity
+     * @return boolean if user already joined activity or not
+     */
+    public boolean volunteerJoinedActivity(final String volunteerId, final String activityId){
+        return volunteerDao.volunteerJoinedActivity(volunteerId, activityId);
+    }
 }
