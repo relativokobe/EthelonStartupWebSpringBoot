@@ -23,6 +23,8 @@ public class Constants {
     public static final int ZERO = 0;
     public static final int ONE = 1;
     public static final int DEFAULT_VOLUNTEER_POINTS = ZERO;
+    public static final String REGISTERED = "Registered";
+    public static final String NOT_REGISTERED = "Not Registered";
     /**
      * This function is used to retrieve skills
      * FIXME Add a config file that could dynamically add Skills

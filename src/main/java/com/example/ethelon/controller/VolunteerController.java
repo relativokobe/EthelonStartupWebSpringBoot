@@ -20,6 +20,8 @@ import static com.example.ethelon.utility.Constants.SUCCESS;
 import static com.example.ethelon.utility.Constants.writeResponseData;
 import static com.example.ethelon.utility.Constants.ALREADY_JOINED;
 import static com.example.ethelon.utility.Constants.MESSAGE;
+import static com.example.ethelon.utility.Constants.REGISTERED;
+import static com.example.ethelon.utility.Constants.NOT_REGISTERED;
 
 /**
  * Controller to handle requests for Volunteer interactions
@@ -97,5 +99,19 @@ public class VolunteerController {
         final Gson gson = new GsonBuilder().serializeNulls().create();
         final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
+    }
+
+    /**
+     * '/checkIfAlreadyAttended' is called from client to check if volunteer already attended the activity
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/checkIfAlreadyAttended")
+    public void checkIfAlreadyAttended(final HttpServletRequest request, final HttpServletResponse response){
+        final JSONObject jsonObject = new JSONObject();
+        final String resultMessage = volunteerService.volunteerJoinedActivity(request.getParameter("volunteer_id"),
+                request.getParameter("activity_id")) ? REGISTERED : NOT_REGISTERED;
+        jsonObject.put(MESSAGE, resultMessage);
+        writeResponseData(response, jsonObject);
     }
 }
