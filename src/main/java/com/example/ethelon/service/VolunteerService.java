@@ -28,7 +28,7 @@ public class VolunteerService {
     public void insertVolunteerToDb(final Volunteer volunteer){
         volunteerDao.insertVolunteerToDb(volunteer);
         //Newly inserted volunteer also needs to insert volunteer badge
-        insertVolunteerBadge(volunteer.getVolunteerId());
+        insertVolunteerBadge(volunteer.getVolunteer_id());
     }
 
     /**

@@ -4,6 +4,7 @@ import com.example.ethelon.dao.ActivityDao;
 import com.example.ethelon.model.Activity;
 import com.example.ethelon.model.ActivityCriteria;
 import com.example.ethelon.model.ActivitySkill;
+import com.example.ethelon.model.Volunteer;
 import com.google.common.annotations.VisibleForTesting;
 import org.springframework.stereotype.Service;
 
@@ -88,5 +89,14 @@ public class ActivityService {
      */
     public List<ActivityCriteria> getActivityCriteria(final String activityId){
         return activityDao.getActivityCriteria(activityId);
+    }
+
+    /**
+     * Function that retrieves volunteers before the activity starts
+     * @param activityId ID of the activity
+     * @return list of volunteers before the activity starts
+     */
+    public List<Volunteer> getVolunteersBeforeActStarts(final String activityId){
+        return activityDao.getVolunteersBeforeActStarts(activityId);
     }
 }

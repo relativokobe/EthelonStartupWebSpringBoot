@@ -3,6 +3,7 @@ package com.example.ethelon.dao;
 import com.example.ethelon.model.Activity;
 import com.example.ethelon.model.ActivityCriteria;
 import com.example.ethelon.model.ActivitySkill;
+import com.example.ethelon.model.Volunteer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -138,4 +139,33 @@ public class ActivityDao {
         return count == null ? 0 : count;
     }
 
+    /**
+     * Function that retrieves volunteers before the activity starts
+     * @param activityId ID of the activity
+     * @return list of volunteers before the activity starts
+     */
+    public List<Volunteer> getVolunteersBeforeActStarts(final String activityId){
+        final Object[] args = new Object[]{activityId};
+        final String query = "SELECT users.name, volunteers.* FROM users " +
+                "INNER JOIN volunteers ON users.user_id = volunteers.user_id " +
+                "INNER JOIN volunteeractivities ON volunteers.volunteer_id = " +
+                "volunteeractivities.volunteer_id WHERE volunteeractivities.activity_id" +
+                " = ?";
+
+        return jdbcTemplate.query(query, args, resultSet -> {
+            final List<Volunteer> volunteers = new ArrayList<>();
+            while(resultSet.next()){
+                final Volunteer volunteer = new Volunteer();
+                volunteer.setVolunteer_id(resultSet.getString("volunteer_id"));
+                volunteer.setName(resultSet.getString("name"));
+                volunteer.setAge(resultSet.getInt("age"));
+                volunteer.setLocation(resultSet.getString("location"));
+                volunteer.setPoints(resultSet.getInt("points"));
+                volunteer.setFcm_token(resultSet.getString("fcm_token"));
+                volunteer.setImage_url(resultSet.getString("image_url"));
+                volunteers.add(volunteer);
+            }
+            return volunteers;
+        });
+    }
 }

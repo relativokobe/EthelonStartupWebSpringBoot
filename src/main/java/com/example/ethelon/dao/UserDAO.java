@@ -66,8 +66,8 @@ public class UserDAO {
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
                 user.setApiToken(rs.getString("api_token"));
-                user.setVolunteerId(rs.getString("volunteer_id"));
-                user.setImageUrl(rs.getString("image_url"));
+                user.setVolunteer_id(rs.getString("volunteer_id"));
+                user.setImage_url(rs.getString("image_url"));
             }
             return user;
         });

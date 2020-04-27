@@ -100,13 +100,13 @@ paths:
           description: "Status is always 200 (Needs to be fixed)"
           schema:
             $ref: "#/definitions/LoginResponse"
-  /getallactivitiesdone:
+  /getallactivities:
     post:
       tags:
         - "Acitivities Interaction"
       summary: "Get activities for Volunteer in home screen"
       description: ""
-      operationId: "getallactivitiesdone"
+      operationId: "getallactivities"
       consumes:
         - "application/json"
       produces:
@@ -216,6 +216,30 @@ paths:
             type: "array"
             items:
               $ref: '#/definitions/ActivityCriteria'
+  /activitygetvolunteersbefore:
+    post:
+      tags:
+        - "Acitivities Interaction"
+      summary: "API to retrieve all volunteers before the start of activity"
+      description: ""
+      operationId: "activitygetvolunteersbefore"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "activity_id"
+          in: "path"
+          description: "ID of the activity"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed). Retrieve all volunteers of an activity before it starts"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/VolunteerName'
 definitions:
   Activity:
     type: "object"
@@ -330,6 +354,23 @@ definitions:
     type: "object"
     properties:
       message:
+        type: "string"
+  VolunteerName:
+    type: "object"
+    properties:
+      volunteer_id:
+        type: "string"
+      location:
+        type: "string"
+      image_url:
+        type: "string"
+      fcm_token:
+        type: "string"
+      age:
+        type: "integer"
+      points:
+        type: "integer"
+      name:
         type: "string"
 externalDocs:
   description: "Find out more about Swagger"

@@ -29,8 +29,8 @@ public class VolunteerDao {
     public void insertVolunteerToDb(final Volunteer volunteer){
         final String query = "INSERT INTO volunteers(volunteer_id, user_id, location, image_url, fcm_token, gaugeExp, age, points) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?);" ;
-        final Object[] args = new Object[]{volunteer.getVolunteerId(), volunteer.getUserId(), volunteer.getLocation(),
-                volunteer.getImageUrl(), volunteer.getFcmToken(), ZERO, volunteer.getAge(), volunteer.getPoints()};
+        final Object[] args = new Object[]{volunteer.getVolunteer_id(), volunteer.getUserId(), volunteer.getLocation(),
+                volunteer.getImage_url(), volunteer.getFcm_token(), ZERO, volunteer.getAge(), volunteer.getPoints()};
         jdbcTemplate.update(query, args);
     }
 

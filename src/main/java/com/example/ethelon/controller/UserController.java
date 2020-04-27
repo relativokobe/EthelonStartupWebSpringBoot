@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static com.example.ethelon.utility.Constants.SUCCESS;
 import static com.example.ethelon.utility.Constants.writeResponseData;
@@ -129,9 +128,9 @@ public class UserController {
             jsonObject.put(Constants.MESSAGE, SUCCESS);
             jsonObject.put("api_token", user.getApiToken());
             //FIXME
-            jsonObject.put("volunteer_id", ((Volunteer)user).getVolunteerId());
+            jsonObject.put("volunteer_id", ((Volunteer)user).getVolunteer_id());
             jsonObject.put("name", user.getName());
-            jsonObject.put("image_url", ((Volunteer)user).getImageUrl());
+            jsonObject.put("image_url", ((Volunteer)user).getImage_url());
         }
         writeResponseData(response, jsonObject);
     }

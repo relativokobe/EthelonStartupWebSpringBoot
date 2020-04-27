@@ -2,8 +2,10 @@ package com.example.ethelon.controller;
 
 import com.example.ethelon.model.Activity;
 import com.example.ethelon.model.ActivityCriteria;
+import com.example.ethelon.model.Volunteer;
 import com.example.ethelon.service.ActivityService;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +65,20 @@ public class ActivityController {
                 getParameter("activity_id"));
 
         final String jsonArray = new Gson().toJson(activityCriteriaList);
+        writeResponseDataArray(response, jsonArray);
+    }
+
+    /**
+     * '/activitygetvolunteersbefore' is called from client to retrieve volunteers before activity starts
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/activitygetvolunteersbefore")
+    public void activitygetvolunteersbefore(final HttpServletRequest request, final HttpServletResponse response){
+        final List<Volunteer> volunteers = activityService.getVolunteersBeforeActStarts(request.getParameter("" +
+                "activity_id"));
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
     }
 }

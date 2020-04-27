@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Volunteer extends User{
-    private String volunteerId;
+    private String volunteer_id;
     private String location;
-    private String imageUrl;
-    private String fcmToken;
+    private String image_url;
+    private String fcm_token;
     private int points = 0;
     private int age = 1;
 
@@ -30,22 +30,22 @@ public class Volunteer extends User{
      * @param password password of te user
      * @param role role of the user
      * @param apiToken api_token of the user
-     * @param volunteerId ID of the volunteer
+     * @param volunteer_id ID of the volunteer
      * @param location location of the volunteer
-     * @param imageUrl image_url of the volunteer
-     * @param fcmToken fcm_token of the volunteer
+     * @param image_url image_url of the volunteer
+     * @param fcm_token fcm_token of the volunteer
      * @param age age of the volunteer
      * @param points points of the volunteer
      */
     public Volunteer(final String userId, final String name, final String email, final String password,
-                     final String role, final String apiToken, final String volunteerId, final String location,
-                     final String imageUrl, final String fcmToken, final int age, final int points) {
+                     final String role, final String apiToken, final String volunteer_id, final String location,
+                     final String image_url, final String fcm_token, final int age, final int points) {
         //Initialize Parent (User)
         super(userId, name, email, password, role, apiToken);
-        this.volunteerId = volunteerId;
+        this.volunteer_id = volunteer_id;
         this.location = location;
-        this.imageUrl = imageUrl;
-        this.fcmToken = fcmToken;
+        this.image_url = image_url;
+        this.fcm_token = fcm_token;
         this.age = age;
         this.points = points;
     }
