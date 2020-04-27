@@ -1,7 +1,10 @@
 package com.example.ethelon.controller;
 
+import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.service.VolunteerService;
 import com.example.ethelon.utility.Constants;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import static com.example.ethelon.utility.Constants.writeResponseDataArray;
 import static com.example.ethelon.utility.Constants.SUCCESS;
 import static com.example.ethelon.utility.Constants.writeResponseData;
 import static com.example.ethelon.utility.Constants.ALREADY_JOINED;
@@ -80,5 +83,19 @@ public class VolunteerController {
         }
 
         writeResponseData(response, jsonObject);
+    }
+
+    /**
+     * '/volunteerstorate' is called from client retrieve the volunteers to be rated by current volunteer
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/groupmatestorate")
+    public void groupmatestorate(final HttpServletRequest request, final HttpServletResponse response){
+        final List<VolunteerToRate> volunteers = volunteerService.retrieveVolunteersToRate(request.getParameter(
+                "volunteer_id"), request.getParameter("activity_id"));
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        final String jsonArray = gson.toJson(volunteers);
+        writeResponseDataArray(response, jsonArray);
     }
 }

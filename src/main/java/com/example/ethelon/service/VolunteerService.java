@@ -3,6 +3,7 @@ package com.example.ethelon.service;
 import com.example.ethelon.dao.VolunteerDao;
 import com.example.ethelon.model.Skill;
 import com.example.ethelon.model.Volunteer;
+import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,5 +70,15 @@ public class VolunteerService {
      */
     public boolean volunteerJoinedActivity(final String volunteerId, final String activityId){
         return volunteerDao.volunteerJoinedActivity(volunteerId, activityId);
+    }
+
+    /**
+     * Function to retrieve volunteers to be rated by current volunteer in an activity
+     * @param volunteerId ID of volunteer
+     * @param activityId ID of activity
+     * @return
+     */
+    public List<VolunteerToRate> retrieveVolunteersToRate(final String volunteerId, final String activityId){
+        return volunteerDao.volunteersToRate(volunteerId, activityId);
     }
 }

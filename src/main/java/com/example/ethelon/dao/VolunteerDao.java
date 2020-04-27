@@ -1,11 +1,13 @@
 package com.example.ethelon.dao;
 
 import com.example.ethelon.model.Volunteer;
+import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.ethelon.utility.Constants.DEFAULT_VOLUNTEER_POINTS;
@@ -100,5 +102,53 @@ public class VolunteerDao {
         }else{
             return count > 0;
         }
+    }
+
+    /**
+     * Function to retrieve the activity group ID of the volunteer on an activity
+     * @param volunteerId ID of the volunteers
+     * @param activityId ID of the activity
+     * @return Activity group ID of the volunteer in an activity
+     */
+    public List<VolunteerToRate> volunteersToRate(final String volunteerId, final String activityId){
+        final Object[] args = new Object[]{volunteerId, activityId};
+        final String query = "SELECT activitygroups.* FROM activitygroups INNER JOIN volunteergroups ON " +
+                "volunteergroups.activity_groups_id = activitygroups.id WHERE volunteergroups.volunteer_id =" +
+                " ? AND activitygroups.activity_id = ? ";
+        return jdbcTemplate.query(query, args, resultSet -> {
+            List<VolunteerToRate> volunteers = new ArrayList<>();
+            if(resultSet.next()){
+                volunteers = getVolunteersToRate(resultSet.getString("numOfVolunteers"),
+                        resultSet.getString("type"), volunteerId, resultSet.getString("id"));
+            }
+            return volunteers;
+        });
+    }
+
+    /**
+     * Function to retrieve volunteers to Rate of current volunteer
+     * @param volunteerId ID of the volunteer
+     * @param activityGroupId ID of the volunteer's activityGroup
+     * @return list of volunteers to be rated by current volunteer
+     */
+    private List<VolunteerToRate> getVolunteersToRate(final String numOfVolunteers,
+                                                      final String type, final String volunteerId,
+                                                      final String activityGroupId){
+        final Object[] args = new Object[]{activityGroupId, volunteerId};
+        final String query = "SELECT users.name, volunteers.volunteer_id, volunteers.image_url" +
+                " FROM users INNER JOIN volunteers ON users.user_id = volunteers.user_id INNER JOIN" +
+                " volunteergroups ON volunteers.volunteer_id = volunteergroups.volunteer_id" +
+                " WHERE volunteergroups.activity_groups_id = ? AND volunteergroups.volunteer_id != ?";
+
+        return jdbcTemplate.query(query, args, resultSet -> {
+            final List<VolunteerToRate> volunteers = new ArrayList<>();
+            while(resultSet.next()){
+                final VolunteerToRate volunteer = new VolunteerToRate(resultSet.getString("name"), resultSet.
+                        getString("volunteer_id"), resultSet.getString("image_url"), activityGroupId,
+                        numOfVolunteers, type);
+                volunteers.add(volunteer);
+            }
+            return volunteers;
+        });
     }
 }
