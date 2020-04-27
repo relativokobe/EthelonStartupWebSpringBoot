@@ -186,12 +186,36 @@ paths:
           in: "path"
           description: "ID of the activity to join"
           required: true
-          type: "integer"
+          type: "string"
       responses:
         200:
           description: "Status is always 200 (Needs to be fixed). message value can be success or Already Joined"
           schema:
             $ref: "#/definitions/Message"
+  /activitycriteria:
+    post:
+      tags:
+        - "Acitivities Interaction"
+      summary: "API to retrieve all criteria of an activity"
+      description: ""
+      operationId: "activitycriteria"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "activity_id"
+          in: "path"
+          description: "ID of the activity"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed). Retrieve all criteria of an activity"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/ActivityCriteria'
 definitions:
   Activity:
     type: "object"

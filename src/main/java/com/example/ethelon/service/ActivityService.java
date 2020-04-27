@@ -80,4 +80,13 @@ public class ActivityService {
                 activity1.getMatchedSkillsWithUser()));
         return activities;
     }
+
+    /**
+     * This function retrieves all the criteria of an activity
+     * @param activityId ID of the activity
+     * @return List of ActivityCriteria
+     */
+    public List<ActivityCriteria> getActivityCriteria(final String activityId){
+        return activityDao.getActivityCriteria(activityId);
+    }
 }

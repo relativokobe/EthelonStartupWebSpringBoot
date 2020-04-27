@@ -64,6 +64,21 @@ public class Constants {
     }
 
     /**
+     * This function is used to write data to response body using String jsonArray
+     * @param response where the String json array will be written to
+     * @param jsonArray the String json array to be written to
+     */
+    public static void writeResponseDataArray(final HttpServletResponse response, final String jsonArray){
+        response.setStatus(HttpServletResponse.SC_OK);
+        try {
+            response.getWriter().write(jsonArray);
+            response.getWriter().flush();
+        } catch (IOException e) {
+            System.out.println("Error writing to Response. " + e.toString());
+        }
+    }
+
+    /**
      * This function returns current timme now String
      * @return String value of current time
      */

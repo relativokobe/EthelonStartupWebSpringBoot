@@ -1,6 +1,7 @@
 package com.example.ethelon.controller;
 
 import com.example.ethelon.model.Activity;
+import com.example.ethelon.model.ActivityCriteria;
 import com.example.ethelon.service.ActivityService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+
+import static com.example.ethelon.utility.Constants.writeResponseDataArray;
 
 /**
  * Controller to handle Requests for Activities interactions
@@ -46,8 +49,20 @@ public class ActivityController {
                 getParameter("volunteer_id"), offsetString == null ? 0 : Integer.parseInt(offsetString));
 
         final String jsonArray = new Gson().toJson(activities);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write(jsonArray);
-        response.getWriter().flush();
+        writeResponseDataArray(response, jsonArray);
+    }
+
+    /**
+     * '/activitycriteria' is called from client to retrieve criteria of an activity.
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/activitycriteria")
+    public void activitycriteria(final HttpServletRequest request, final HttpServletResponse response){
+        final List<ActivityCriteria> activityCriteriaList = activityService.getActivityCriteria(request.
+                getParameter("activity_id"));
+
+        final String jsonArray = new Gson().toJson(activityCriteriaList);
+        writeResponseDataArray(response, jsonArray);
     }
 }
