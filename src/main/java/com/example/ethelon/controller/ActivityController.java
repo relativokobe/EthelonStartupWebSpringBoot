@@ -81,4 +81,15 @@ public class ActivityController {
         final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
     }
+
+    /**
+     * '/activitygetvolunteersafter' is called from client to retrieve volunteers after activity starts
+     * FIXME Has the same implementation with '/activitygetvolunteersbefore'
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/activitygetvolunteersafter")
+    public void activitygetvolunteersafter(final HttpServletRequest request, final HttpServletResponse response){
+        activitygetvolunteersbefore(request, response);
+    }
 }

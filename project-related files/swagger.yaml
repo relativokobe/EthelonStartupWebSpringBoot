@@ -240,6 +240,30 @@ paths:
             type: "array"
             items:
               $ref: '#/definitions/VolunteerName'
+  /activitygetvolunteersafter:
+    post:
+      tags:
+        - "Acitivities Interaction"
+      summary: "API to retrieve all volunteers after the start of activity"
+      description: ""
+      operationId: "activitygetvolunteersafter"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "activity_id"
+          in: "path"
+          description: "ID of the activity"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed). Retrieve all volunteers of an activity after it starts"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/VolunteerName'
 definitions:
   Activity:
     type: "object"
