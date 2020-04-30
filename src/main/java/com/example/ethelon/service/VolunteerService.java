@@ -1,13 +1,21 @@
 package com.example.ethelon.service;
 
+import com.example.ethelon.dao.SettingDao;
+import com.example.ethelon.dao.SkillDao;
 import com.example.ethelon.dao.VolunteerDao;
 import com.example.ethelon.model.Skill;
 import com.example.ethelon.model.Volunteer;
 import com.example.ethelon.model.VolunteerToRate;
+import com.example.ethelon.model.VolunteerBadgesInfoResponse;
+import com.example.ethelon.model.VolunteerBadgeInfo;
+import com.example.ethelon.model.Setting;
+import com.example.ethelon.model.BadgeEnum;
+import com.example.ethelon.model.Badge;
 import com.example.ethelon.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +29,18 @@ public class VolunteerService {
      */
     @Autowired
     private VolunteerDao volunteerDao;
+
+    /**
+     * Dao for Skill
+     */
+    @Autowired
+    private SkillDao skillDao;
+
+    /**
+     * Dao for Settings
+     */
+    @Autowired
+    private SettingDao settingDao;
 
     /**
      * Service that calls DAO to insert Volunteer. Can only be called in User registration
@@ -80,5 +100,67 @@ public class VolunteerService {
      */
     public List<VolunteerToRate> retrieveVolunteersToRate(final String volunteerId, final String activityId){
         return volunteerDao.volunteersToRate(volunteerId, activityId);
+    }
+
+    /**
+     * This function retrieves volunteer's profile
+     * @param volunteerId ID of the volunteer
+     * @return list of VolunteerBadgesInfoResponse
+     */
+    public List<VolunteerBadgesInfoResponse> retrieveVolunteerProfile(final String volunteerId){
+        final List<VolunteerBadgeInfo> badgesInfo = volunteerDao.getVolunteerBadgesInfo(volunteerId);
+        final List<VolunteerBadgesInfoResponse> volunteerBadgesInfo = new ArrayList<>();
+        for(final VolunteerBadgeInfo info : badgesInfo){
+            final List<Badge> badges = skillDao.getBadgesAccordingToSkill(info.getSkill());
+            final int percentCompleted = getPercentCompleted(info.getStar(), info.getBadge(), info.getPoints());
+            final VolunteerBadgesInfoResponse volunteerBadgeInfoResponse =
+                    new VolunteerBadgesInfoResponse(badgesInfo, percentCompleted, badges);
+            volunteerBadgesInfo.add(volunteerBadgeInfoResponse);
+        }
+
+        return volunteerBadgesInfo;
+    }
+
+    /**
+     * This function computes the total percent completed by volunteer
+     * @param stars number of stars
+     * @param badge badge to compute
+     * @param badgePoints current badgePoints
+     * @return percentage completed of the badge
+     */
+    private int getPercentCompleted(final int stars, final String badge, final int badgePoints){
+        final int gauge = getGauge(badge);
+        //compute points. Multiply stars and gauge then add badge points
+        final int points = (stars * gauge) + badgePoints;
+        //compute percentage completed
+        return (points / (gauge * 6)) * 100;
+    }
+
+    /**
+     * This function retrieves the gaugePoints depending on Badge
+     * @param badge to get the gauge from
+     * @return gauge points
+     */
+    private int getGauge(final String badge){
+        final Setting setting = settingDao.getSetting();
+        final int gauge;
+        switch(BadgeEnum.valueOf(badge)){
+            case Nothing:
+            case Newbie:
+                gauge = setting.getNewbieGauge();
+                break;
+            case Explorer:
+                gauge = setting.getExplorerGauge();
+                break;
+            case Expert:
+                gauge = setting.getExpertGauge();
+                break;
+            case Legend:
+                gauge = setting.getLegendGauge();
+                break;
+            default:
+                gauge = 0;
+        }
+        return gauge;
     }
 }

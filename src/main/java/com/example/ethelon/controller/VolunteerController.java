@@ -1,5 +1,6 @@
 package com.example.ethelon.controller;
 
+import com.example.ethelon.model.VolunteerBadgesInfoResponse;
 import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.service.VolunteerService;
 import com.example.ethelon.utility.Constants;
@@ -113,5 +114,19 @@ public class VolunteerController {
                 request.getParameter("activity_id")) ? REGISTERED : NOT_REGISTERED;
         jsonObject.put(MESSAGE, resultMessage);
         writeResponseData(response, jsonObject);
+    }
+
+    /**
+     * '/volunteerprofile' is called from client to retrieve the details of the volunteer
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/volunteerprofile")
+    public void volunteerprofile(final HttpServletRequest request, final HttpServletResponse response){
+        final List<VolunteerBadgesInfoResponse> info = volunteerService.retrieveVolunteerProfile
+                (request.getParameter("volunteer_id"));
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        final String jsonArray = gson.toJson(info);
+        writeResponseDataArray(response, jsonArray);
     }
 }

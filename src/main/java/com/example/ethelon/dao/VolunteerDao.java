@@ -1,6 +1,7 @@
 package com.example.ethelon.dao;
 
 import com.example.ethelon.model.Volunteer;
+import com.example.ethelon.model.VolunteerBadgeInfo;
 import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +150,35 @@ public class VolunteerDao {
                 volunteers.add(volunteer);
             }
             return volunteers;
+        });
+    }
+
+    /**
+     * Retrieve volunteer bades info of current volunteer
+     * @param volunteerId ID of the volunteers
+     * @return list of VolunteerBadgeInfo
+     */
+    public List<VolunteerBadgeInfo> getVolunteerBadgesInfo(final String volunteerId){
+        final Object[] args = new Object[]{volunteerId};
+        final String query = "Select volunteerbadges.*, badges.url as url, badges.* FROM volunteerbadges INNER JOIN " +
+                "badges  ON volunteerbadges.badge = badges.badge AND volunteerbadges.skill = badges.skill WHERE " +
+                "volunteerbadges.volunteer_id = ?";
+        return jdbcTemplate.query(query, args, resultSet -> {
+            final List<VolunteerBadgeInfo> badgesInfo = new ArrayList<>();
+            while(resultSet.next()){
+                final VolunteerBadgeInfo info = new VolunteerBadgeInfo();
+                info.setBadge(resultSet.getString("badge"));
+                info.setVolunteer_id(resultSet.getString("volunteer_id"));
+                info.setStar(resultSet.getInt("star"));
+                info.setPoints(resultSet.getInt("points"));
+                info.setGaugeExp(resultSet.getInt("gaugeExp"));
+                info.setUrl(resultSet.getString("url"));
+                info.setId(resultSet.getInt("id"));
+                info.setSkill(resultSet.getString("skill"));
+                info.setBadge_name(resultSet.getString("badge_name"));
+                badgesInfo.add(info);
+            }
+            return badgesInfo;
         });
     }
 }
