@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 //FIXME
+import java.util.HashMap;
+
 import static com.example.ethelon.utility.Constants.*;
 import static com.example.ethelon.utility.Constants.retrieveStringObject;
 
@@ -64,10 +66,10 @@ public class UserController {
         if (userService.checkIfEmailAlreadyExists(email)) {
             //FIXME Response status should not be OK
             response.setStatus(HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED);
-            final JSONObject jsonObject = new JSONObject();
-            jsonObject.put(Constants.MESSAGE, Constants.EMAIL_ALREADY_EXISTS);
+            final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
+            jsonObjectResponse.put(Constants.MESSAGE, Constants.EMAIL_ALREADY_EXISTS);
             //Write response data
-            writeResponseData(response, jsonObject);
+            writeResponseData(response, jsonObjectResponse);
             return;
         }
 
@@ -97,7 +99,7 @@ public class UserController {
 
         //Prepare response.
         response.setStatus(HttpServletResponse.SC_OK);
-        final JSONObject jsonObjectResponse = new JSONObject();
+        final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
         jsonObjectResponse.put("api_token", apiToken);
         jsonObjectResponse.put("volunteer_id", volunteerId);
         jsonObjectResponse.put("name", name);
@@ -121,21 +123,21 @@ public class UserController {
         }
 
         final User user = userService.login(email, password);
-        final JSONObject jsonObject = new JSONObject();
+        final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
         //FIXME STATUS IS OK EVEN THOUGH CREDENTIALS ARE INVALID
         response.setStatus(HttpServletResponse.SC_OK);
         //Credentials did not match any of the records in the DB
         if(user == null){
-            jsonObject.put(Constants.MESSAGE, Constants.INVALID_CREDENTIALS);
+            jsonObjectResponse.put(Constants.MESSAGE, Constants.INVALID_CREDENTIALS);
         }else{
-            jsonObject.put(Constants.MESSAGE, SUCCESS);
-            jsonObject.put("api_token", user.getApiToken());
+            jsonObjectResponse.put(Constants.MESSAGE, SUCCESS);
+            jsonObjectResponse.put("api_token", user.getApiToken());
             //FIXME
-            jsonObject.put("volunteer_id", ((Volunteer)user).getVolunteer_id());
-            jsonObject.put("name", user.getName());
-            jsonObject.put("image_url", ((Volunteer)user).getImage_url());
+            jsonObjectResponse.put("volunteer_id", ((Volunteer)user).getVolunteer_id());
+            jsonObjectResponse.put("name", user.getName());
+            jsonObjectResponse.put("image_url", ((Volunteer)user).getImage_url());
         }
-        writeResponseData(response, jsonObject);
+        writeResponseData(response, jsonObjectResponse);
     }
 
 }

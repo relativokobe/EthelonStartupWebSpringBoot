@@ -1,6 +1,8 @@
 package com.example.ethelon.utility;
 
 import com.example.ethelon.model.Skill;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.cloudinary.json.JSONException;
 import org.cloudinary.json.JSONObject;
@@ -11,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -56,13 +59,17 @@ public class Constants {
     }
 
     /**
-     * This function is used to write data to Response body using JSON object
+     * This function is used to write data to Response body using a hashmap
      * @param response where the JSON object data will be written to
-     * @param jsonObject the data to be written to response
+     * @param hashMap the data to be written to response
      */
-    public static void writeResponseData(final HttpServletResponse response, final JSONObject jsonObject){
+    public static void writeResponseData(final HttpServletResponse response, final HashMap<String, Object> hashMap){
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        final String stringResponse = gson.toJson(hashMap);
         try {
-            jsonObject.write(response.getWriter());
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(stringResponse);
         } catch (final IOException e) {
             System.out.println("Error writing to Response. " + e.toString());
         }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 //FIXME
@@ -77,17 +78,17 @@ public class VolunteerController {
         final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
         final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
         final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
-        final JSONObject jsonObject = new JSONObject();
+        final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
 
         //check if volunteer already joined activity
         if(volunteerService.volunteerJoinedActivity(volunteerId, activityId)){
-            jsonObject.put(MESSAGE, ALREADY_JOINED);
+            jsonObjectResponse.put(MESSAGE, ALREADY_JOINED);
         }else{
             volunteerService.joinActivity(volunteerId, activityId);
-            jsonObject.put(MESSAGE, SUCCESS);
+            jsonObjectResponse.put(MESSAGE, SUCCESS);
         }
 
-        writeResponseData(response, jsonObject);
+        writeResponseData(response, jsonObjectResponse);
     }
 
     /**
@@ -116,11 +117,11 @@ public class VolunteerController {
         final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
         final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
         final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
-        final JSONObject jsonObject = new JSONObject();
+        final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
         final String resultMessage = volunteerService.volunteerJoinedActivity(volunteerId, activityId)
                 ? REGISTERED : NOT_REGISTERED;
-        jsonObject.put(MESSAGE, resultMessage);
-        writeResponseData(response, jsonObject);
+        jsonObjectResponse.put(MESSAGE, resultMessage);
+        writeResponseData(response, jsonObjectResponse);
     }
 
     /**
