@@ -57,6 +57,9 @@ public class ActivityDao {
                 activity.setCreated_at(rs.getString("created_at"));
                 activity.setContact(rs.getString("contact"));
                 activity.setContactperson(rs.getString("contactperson"));
+                activity.setFoundation_img(rs.getString("image_url"));
+                activity.setUpdated_at(rs.getString("updated_at"));
+                activity.setFoundtion_name(rs.getString("name"));
                 activities.add(activity);
             }
             return activities;
