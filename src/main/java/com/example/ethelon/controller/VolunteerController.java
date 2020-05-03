@@ -16,13 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import static com.example.ethelon.utility.Constants.writeResponseDataArray;
-import static com.example.ethelon.utility.Constants.SUCCESS;
-import static com.example.ethelon.utility.Constants.writeResponseData;
-import static com.example.ethelon.utility.Constants.ALREADY_JOINED;
-import static com.example.ethelon.utility.Constants.MESSAGE;
-import static com.example.ethelon.utility.Constants.REGISTERED;
-import static com.example.ethelon.utility.Constants.NOT_REGISTERED;
+
+//FIXME
+import static com.example.ethelon.utility.Constants.*;
+import static com.example.ethelon.utility.Constants.retrieveStringObject;
 
 /**
  * Controller to handle requests for Volunteer interactions
@@ -51,17 +48,21 @@ public class VolunteerController {
      */
     @RequestMapping("/volunteerskills")
     public void volunteerskills(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        final String volunteerId = request.getParameter("volunteer_id");
-        final String countString = request.getParameter("count");
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final String countString = retrieveStringObject(jsonObjectRequest, "count");
         final int count = countString == null ? 0 : Integer.parseInt(countString);
         //FIXME should be Skill, not String
         final List<String> skills = new ArrayList<>();
-        //Retrieve skills
-        for(int i = 0; i < count; i++){
-            skills.add(request.getParameter("params"+i));
+
+        if(count > 0){
+            //Retrieve skills
+            for(int i = 0; i < count; i++){
+                skills.add(retrieveStringObject(jsonObjectRequest, "params"+i));
+            }
+            volunteerService.insertVolunteerSkills(volunteerId, skills);
         }
 
-        volunteerService.insertVolunteerSkills(volunteerId, skills);
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(Constants.SUCCESS);
     }
@@ -73,8 +74,9 @@ public class VolunteerController {
      */
     @RequestMapping("/joinactivity")
     public void joinactivity(final HttpServletRequest request, final HttpServletResponse response){
-        final String volunteerId = request.getParameter("volunteer_id");
-        final String activityId = request.getParameter("activity_id");
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
         final JSONObject jsonObject = new JSONObject();
 
         //check if volunteer already joined activity
@@ -95,8 +97,10 @@ public class VolunteerController {
      */
     @RequestMapping("/groupmatestorate")
     public void groupmatestorate(final HttpServletRequest request, final HttpServletResponse response){
-        final List<VolunteerToRate> volunteers = volunteerService.retrieveVolunteersToRate(request.getParameter(
-                "volunteer_id"), request.getParameter("activity_id"));
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
+        final List<VolunteerToRate> volunteers = volunteerService.retrieveVolunteersToRate(volunteerId, activityId);
         final Gson gson = new GsonBuilder().serializeNulls().create();
         final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
@@ -109,9 +113,12 @@ public class VolunteerController {
      */
     @RequestMapping("/checkIfAlreadyAttended")
     public void checkIfAlreadyAttended(final HttpServletRequest request, final HttpServletResponse response){
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
         final JSONObject jsonObject = new JSONObject();
-        final String resultMessage = volunteerService.volunteerJoinedActivity(request.getParameter("volunteer_id"),
-                request.getParameter("activity_id")) ? REGISTERED : NOT_REGISTERED;
+        final String resultMessage = volunteerService.volunteerJoinedActivity(volunteerId, activityId)
+                ? REGISTERED : NOT_REGISTERED;
         jsonObject.put(MESSAGE, resultMessage);
         writeResponseData(response, jsonObject);
     }
@@ -123,8 +130,9 @@ public class VolunteerController {
      */
     @RequestMapping("/volunteerprofile")
     public void volunteerprofile(final HttpServletRequest request, final HttpServletResponse response){
-        final List<VolunteerBadgesInfoResponse> info = volunteerService.retrieveVolunteerProfile
-                (request.getParameter("volunteer_id"));
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final List<VolunteerBadgesInfoResponse> info = volunteerService.retrieveVolunteerProfile(volunteerId);
         final Gson gson = new GsonBuilder().serializeNulls().create();
         final String jsonArray = gson.toJson(info);
         writeResponseDataArray(response, jsonArray);

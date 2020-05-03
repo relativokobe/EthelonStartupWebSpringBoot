@@ -2,9 +2,12 @@ package com.example.ethelon.utility;
 
 import com.example.ethelon.model.Skill;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.cloudinary.json.JSONException;
 import org.cloudinary.json.JSONObject;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -86,5 +89,54 @@ public class Constants {
      */
     public static String getCurrentTimeInString(){
         return String.valueOf(LocalTime.now());
+    }
+
+    /**
+     * This function returns request data in a form of JSONObject
+     * @param request request where the data is stored
+     * @return JSONObject
+     */
+    public static JSONObject retrieveDataFromRequest(final HttpServletRequest request){
+        JSONObject jsonObject = null;
+        final StringBuffer jb = new StringBuffer();
+        String line = null;
+        try {
+            final BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null)
+                jb.append(line);
+        } catch (Exception e) { /*report an error*/ }
+
+        try {
+            jsonObject =  new JSONObject(jb.toString());
+        } catch (final JSONException e) {
+            System.out.println("error");
+        }
+        return jsonObject;
+    }
+
+    /**
+     * This function retrieves the String from object json
+     * @param json json object
+     * @param property property to be retrieved
+     * @return String value from property
+     */
+    public static String retrieveStringObject(final JSONObject json, final String property){
+        try{
+            final Object object = json.get(property);
+            return object == null ? null : String.valueOf(object);
+        }catch (final Exception e){
+            return null;
+        }
+    }
+
+    /**
+     * This function retrieves the int from object json
+     * @param json json object
+     * @param property property to be retrieved
+     * @return String value from property
+     */
+    public static int retrieveIntegerObject(final JSONObject json, final String property){
+        final Object object = json.get(property);
+        return object == null ? 0 : Integer.parseInt(String.valueOf(object));
     }
 }

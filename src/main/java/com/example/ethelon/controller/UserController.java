@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.example.ethelon.utility.Constants.SUCCESS;
-import static com.example.ethelon.utility.Constants.writeResponseData;
+//FIXME
+import static com.example.ethelon.utility.Constants.*;
+import static com.example.ethelon.utility.Constants.retrieveStringObject;
 
 /**
  * Controller to handle Requests for User interactions
@@ -54,7 +55,8 @@ public class UserController {
      */
     @PostMapping("/register")
     public void register(final HttpServletRequest request, final HttpServletResponse response) {
-        final String email = request.getParameter("email");
+        final JSONObject jsonObjectRequest = Constants.retrieveDataFromRequest(request);
+        final String email = retrieveStringObject(jsonObjectRequest, "email");
         if (StringUtils.isAnyEmpty(email)) {
             //Set response
         }
@@ -69,16 +71,16 @@ public class UserController {
             return;
         }
 
-        final String password = request.getParameter("password");
-        final String name = request.getParameter("name");
-        final String role = request.getParameter("role");
-        final String fcmToken = request.getParameter("fcm_token");
-        final String location = request.getParameter("location");
-        final String imageUrl = request.getParameter("image_url");
-        final String userId = Constants.generateId();
-        final int age = Integer.parseInt(request.getParameter("age"));
+        final String password = retrieveStringObject(jsonObjectRequest, "password");
+        final String name = retrieveStringObject(jsonObjectRequest, "name");
+        final String role = retrieveStringObject(jsonObjectRequest, "role");
+        final String fcmToken = retrieveStringObject(jsonObjectRequest, "fcm_token");
+        final String location = retrieveStringObject(jsonObjectRequest, "location");
+        final String imageUrl = retrieveStringObject(jsonObjectRequest, "image_url");
+        final int age = retrieveIntegerObject(jsonObjectRequest, "age");
         final String HashedPassword =  HashPasswordUtility.getHashPassword(password);
         final String volunteerId = Constants.generateId();
+        final String userId = Constants.generateId();
         //FIXME temporary
         final String apiToken = userId;
         if(StringUtils.isAnyEmpty(name, role, fcmToken)){
@@ -95,12 +97,12 @@ public class UserController {
 
         //Prepare response.
         response.setStatus(HttpServletResponse.SC_OK);
-        final JSONObject jsonObject = new JSONObject();
-        jsonObject.put("api_token", apiToken);
-        jsonObject.put("volunteer_id", volunteerId);
-        jsonObject.put("name", name);
-        jsonObject.put(Constants.MESSAGE, SUCCESS);
-        writeResponseData(response, jsonObject);
+        final JSONObject jsonObjectResponse = new JSONObject();
+        jsonObjectResponse.put("api_token", apiToken);
+        jsonObjectResponse.put("volunteer_id", volunteerId);
+        jsonObjectResponse.put("name", name);
+        jsonObjectResponse.put(Constants.MESSAGE, SUCCESS);
+        writeResponseData(response, jsonObjectResponse);
     }
 
     /**
@@ -110,8 +112,9 @@ public class UserController {
      */
     @RequestMapping("/login")
     public void login(final HttpServletRequest request, final HttpServletResponse response){
-        final String email = request.getParameter("email");
-        final String password = request.getParameter("password");
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String email = retrieveStringObject(jsonObjectRequest, "email");
+        final String password = retrieveStringObject(jsonObjectRequest, "password");
 
         if(StringUtils.isAnyEmpty(email, password)){
             //FIXME DO SOMETHING

@@ -6,16 +6,18 @@ import com.example.ethelon.model.Volunteer;
 import com.example.ethelon.service.ActivityService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
-import static com.example.ethelon.utility.Constants.writeResponseDataArray;
+//FIXME
+import static com.example.ethelon.utility.Constants.*;
+import static com.example.ethelon.utility.Constants.retrieveStringObject;
 
 /**
  * Controller to handle Requests for Activities interactions
@@ -45,10 +47,13 @@ public class ActivityController {
      * @param response response to send to client
      */
     @RequestMapping("/getallactivities")
-    public void getAllActivitiesNotDone(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        final String offsetString = request.getParameter("offset");
-        final List<Activity> activities = activityService.getActivitiesForUserHomePage(request.
-                getParameter("volunteer_id"), offsetString == null ? 0 : Integer.parseInt(offsetString));
+    public void getAllActivitiesNotDone(final HttpServletRequest request, final HttpServletResponse response) {
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+
+        final String offsetString = retrieveStringObject(jsonObjectRequest, "offset");
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final List<Activity> activities = activityService.getActivitiesForUserHomePage(volunteerId,
+                offsetString == null ? 0 : Integer.parseInt(offsetString));
 
         final String jsonArray = new Gson().toJson(activities);
         writeResponseDataArray(response, jsonArray);
@@ -61,8 +66,9 @@ public class ActivityController {
      */
     @RequestMapping("/activitycriteria")
     public void activitycriteria(final HttpServletRequest request, final HttpServletResponse response){
-        final List<ActivityCriteria> activityCriteriaList = activityService.getActivityCriteria(request.
-                getParameter("activity_id"));
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
+        final List<ActivityCriteria> activityCriteriaList = activityService.getActivityCriteria(activityId);
 
         final String jsonArray = new Gson().toJson(activityCriteriaList);
         writeResponseDataArray(response, jsonArray);
@@ -75,8 +81,9 @@ public class ActivityController {
      */
     @RequestMapping("/activitygetvolunteersbefore")
     public void activitygetvolunteersbefore(final HttpServletRequest request, final HttpServletResponse response){
-        final List<Volunteer> volunteers = activityService.getVolunteersBeforeActStarts(request.getParameter("" +
-                "activity_id"));
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String activityId = retrieveStringObject(jsonObjectRequest, "activity_id");
+        final List<Volunteer> volunteers = activityService.getVolunteersBeforeActStarts(activityId);
         final Gson gson = new GsonBuilder().serializeNulls().create();
         final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
