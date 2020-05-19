@@ -206,4 +206,15 @@ public class VolunteerDao {
             return volunteers;
         });
     }
+
+    /**
+     * This function updates the user's FCM token in the DB
+     * @param volunteerId ID of the volunteer
+     * @param fcmToken FCM token of the volunteer
+     */
+    public void fcmToken(final String volunteerId, final String fcmToken){
+        final String query = "UPDATE volunteers SET fcm_token = ? WHERE volunteer_id = ?";
+        final Object[] args = new Object[]{fcmToken, volunteerId};
+        jdbcTemplate.update(query, args);
+    }
 }

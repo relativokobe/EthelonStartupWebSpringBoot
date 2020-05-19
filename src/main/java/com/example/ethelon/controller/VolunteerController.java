@@ -152,4 +152,20 @@ public class VolunteerController {
         final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
     }
+
+    /**
+     * '/fcm_token' is called from client to update the FCM token of the user
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/fcm_token")
+    public void fcmToken(final HttpServletRequest request, final HttpServletResponse response){
+        final JSONObject jsonObjectRequest = retrieveDataFromRequest(request);
+        final String volunteerId = retrieveStringObject(jsonObjectRequest, "volunteer_id");
+        final String fcmToken = retrieveStringObject(jsonObjectRequest, "fcm_token");
+        volunteerService.fcmToken(volunteerId, fcmToken);
+        final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
+        jsonObjectResponse.put(MESSAGE, SUCCESS);
+        writeResponseData(response, jsonObjectResponse);
+    }
 }

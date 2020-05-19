@@ -172,4 +172,13 @@ public class VolunteerService {
     public List<LeaderBoardVolunteer> getVolunteersForLeaderBoard(){
         return volunteerDao.getVolunteersForLeaderboard();
     }
+
+    /**
+     * This function calls the volunteerDao to update the fcm token of the volunteer
+     * @param volunteerId ID of the volunteer
+     * @param fcmToken FCM token of the volunteer
+     */
+    public void fcmToken(final String volunteerId, final String fcmToken){
+        volunteerDao.fcmToken(volunteerId, fcmToken);
+    }
 }
