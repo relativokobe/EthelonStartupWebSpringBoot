@@ -344,6 +344,24 @@ paths:
             type: "array"
             items:
               $ref: '#/definitions/InfoBadge'
+  /leaderboard:
+    post:
+      tags:
+        - "Volunteer-related information"
+      summary: "API to retrieve leaderboard of volunteers"
+      description: ""
+      operationId: "leaderboard"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Status is always 200 (Needs to be fixed). Retrieve volunteer profile details"
+          schema:
+            type: "array"
+            items:
+              $ref: '#/definitions/Leaderboard'
 definitions:
   Activity:
     type: "object"
@@ -504,6 +522,25 @@ definitions:
         type: "string"
       badge_name:
         type: "string"
+  Leaderboard:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      api_token:
+        type: "string"
+      volunteer_id:
+        type: "string"
+      location:
+        type: "string"
+      image_url:
+        type: "string"
+      fcm_token:
+        type: "string"
+      points:
+        type: "integer"
+      age:
+        type: "integer"
   InfoBadge:
     type: "object"
     properties:

@@ -11,6 +11,7 @@ import com.example.ethelon.model.VolunteerBadgeInfo;
 import com.example.ethelon.model.Setting;
 import com.example.ethelon.model.BadgeEnum;
 import com.example.ethelon.model.Badge;
+import com.example.ethelon.model.LeaderBoardVolunteer;
 import com.example.ethelon.utility.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,5 +163,13 @@ public class VolunteerService {
                 gauge = 0;
         }
         return gauge;
+    }
+
+    /**
+     * This function retrieves the volunteers sorted according to points for leaderboard
+     * @return list of volunteers
+     */
+    public List<LeaderBoardVolunteer> getVolunteersForLeaderBoard(){
+        return volunteerDao.getVolunteersForLeaderboard();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.ethelon.dao;
 
+import com.example.ethelon.model.LeaderBoardVolunteer;
 import com.example.ethelon.model.Volunteer;
 import com.example.ethelon.model.VolunteerBadgeInfo;
 import com.example.ethelon.model.VolunteerToRate;
@@ -179,6 +180,30 @@ public class VolunteerDao {
                 badgesInfo.add(info);
             }
             return badgesInfo;
+        });
+    }
+
+    /**
+     * Retrieve list of volunteers sorted for leaderboard
+     * @return List of LeaderBoardVolunteer
+     */
+    public List<LeaderBoardVolunteer> getVolunteersForLeaderboard(){
+        final String query = "SELECT users.name AS name, volunteers.*, users.api_token AS api_token FROM volunteers " +
+                "INNER JOIN users ON volunteers.user_id = users.user_id ORDER BY volunteers.points DESC";
+        return jdbcTemplate.query(query, resultSet -> {
+            final List<LeaderBoardVolunteer> volunteers = new ArrayList<>();
+            while(resultSet.next()){
+                final LeaderBoardVolunteer volunteer = new LeaderBoardVolunteer();
+                volunteer.setApiToken(resultSet.getString("api_token"));
+                volunteer.setName(resultSet.getString("name"));
+                volunteer.setAge(resultSet.getInt("age"));
+                volunteer.setVolunteer_id(resultSet.getString("volunteer_id"));
+                volunteer.setLocation(resultSet.getString("location"));
+                volunteer.setPoints(resultSet.getInt("points"));
+                volunteer.setFcm_token(resultSet.getString("fcm_token"));
+                volunteers.add(volunteer);
+            }
+            return volunteers;
         });
     }
 }

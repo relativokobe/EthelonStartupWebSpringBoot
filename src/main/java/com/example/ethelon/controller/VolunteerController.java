@@ -1,5 +1,6 @@
 package com.example.ethelon.controller;
 
+import com.example.ethelon.model.LeaderBoardVolunteer;
 import com.example.ethelon.model.VolunteerBadgesInfoResponse;
 import com.example.ethelon.model.VolunteerToRate;
 import com.example.ethelon.service.VolunteerService;
@@ -136,6 +137,19 @@ public class VolunteerController {
         final List<VolunteerBadgesInfoResponse> info = volunteerService.retrieveVolunteerProfile(volunteerId);
         final Gson gson = new GsonBuilder().serializeNulls().create();
         final String jsonArray = gson.toJson(info);
+        writeResponseDataArray(response, jsonArray);
+    }
+
+    /**
+     * '/leaderboard' is called from client to retrieve the list of volunteer for leaderboard
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/leaderboard")
+    public void leaderboard(final HttpServletRequest request, final HttpServletResponse response){
+        final List<LeaderBoardVolunteer> volunteers = volunteerService.getVolunteersForLeaderBoard();
+        final Gson gson = new GsonBuilder().serializeNulls().create();
+        final String jsonArray = gson.toJson(volunteers);
         writeResponseDataArray(response, jsonArray);
     }
 }
