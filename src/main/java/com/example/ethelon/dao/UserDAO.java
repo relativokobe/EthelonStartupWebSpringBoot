@@ -73,4 +73,24 @@ public class UserDAO {
         });
     }
 
+    /**
+     * This function checks if user ID already exists in DB or not
+     * @param userId ID of the user
+     * @return boolean if user ID exists or not
+     */
+    public boolean checkIfUserIdExists(final String userId){
+        final Object[] args = new Object[]{userId};
+        final String query = "SELECT COUNT(*) as count FROM users WHERE user_id = ?";
+
+        final Integer resInt = jdbcTemplate.query(query, args, resultSet ->
+            resultSet.next() ? resultSet.getInt("count") : 0
+        );
+
+        if(resInt == null){
+            return false;
+        }else{
+            return resInt > 0;
+        }
+    }
+
 }

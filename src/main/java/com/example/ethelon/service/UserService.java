@@ -63,4 +63,13 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Service that calls DAO to check if user ID existss
+     * @param userId ID of the user to be checked
+     * @return boolean if user ID exists or not
+     */
+    public boolean checkIfUserIdExists(final String userId){
+        return userDAO.checkIfUserIdExists(userId);
+    }
+
 }

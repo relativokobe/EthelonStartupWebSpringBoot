@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 import static com.example.ethelon.utility.Constants.*;
-import static com.example.ethelon.utility.Constants.retrieveStringObject;
 
 /**
  * Controller to handle Requests for User interactions
@@ -73,38 +72,74 @@ public class UserController {
             return;
         }
 
-        final String password = retrieveStringObject(jsonObjectRequest, "password");
         final String name = retrieveStringObject(jsonObjectRequest, "name");
         final String role = retrieveStringObject(jsonObjectRequest, "role");
         final String fcmToken = retrieveStringObject(jsonObjectRequest, "fcm_token");
+
+        if(StringUtils.isAnyEmpty(name, role, fcmToken)){
+            //FIXME set response if these are empty
+        }
+        final String userId = Constants.generateId();
+        final Volunteer user = retrieveVolunteerFromReq(jsonObjectRequest, email, fcmToken, userId);
+        register(user);
+        response.setStatus(HttpServletResponse.SC_OK);
+        final HashMap<String, Object> jsonObjectResponse = writeResponseDataForRegister(user.getApiToken(),
+                user.getVolunteer_id(), name);
+        jsonObjectResponse.put(MESSAGE, SUCCESS);
+        writeResponseData(response, jsonObjectResponse);
+    }
+
+    /**
+     * This function retrieves the volunteer information from the request
+     * @param jsonObjectRequest object where the info are stored
+     * @param email email of the user
+     * @param fcmToken fcm token of the user
+     * @return Volunteer object created from the info
+     */
+    private Volunteer retrieveVolunteerFromReq(final JSONObject jsonObjectRequest, final String email, final String fcmToken,
+                                               final String userId){
+        final String password = retrieveStringObject(jsonObjectRequest, "password");
+        final String name = retrieveStringObject(jsonObjectRequest, "name");
+        final String role = retrieveStringObject(jsonObjectRequest, "role");
         final String location = retrieveStringObject(jsonObjectRequest, "location");
         final String imageUrl = retrieveStringObject(jsonObjectRequest, "image_url");
         final int age = retrieveIntegerObject(jsonObjectRequest, "age");
         final String HashedPassword =  HashPasswordUtility.getHashPassword(password);
         final String volunteerId = Constants.generateId();
-        final String userId = Constants.generateId();
+
         //FIXME temporary
         final String apiToken = userId;
-        if(StringUtils.isAnyEmpty(name, role, fcmToken)){
-            //FIXME set response if these are empty
-        }
 
         //FIXME there should be a process to know which role
-        final Volunteer user = new Volunteer(userId, name, email, HashedPassword, role, apiToken, volunteerId,
+        return new Volunteer(userId, name, email, HashedPassword, role, apiToken, volunteerId,
                 location, imageUrl, fcmToken, age, 0);
+    }
 
+    /**
+     * Function to call service to register user
+     * @param user to be registered
+     */
+    private void register(final Volunteer user){
         userService.insertUserToDb(user);
         ////FIXME there should be a process to know which role
         volunteerService.insertVolunteerToDb(user);
+    }
 
-        //Prepare response.
-        response.setStatus(HttpServletResponse.SC_OK);
+    /**
+     * Function to write response data for register
+     * @param apiToken api token of the user
+     * @param volunteerId id of the volunteer
+     * @param name name of the user
+     * @return HashMap for the response data
+     */
+    private HashMap<String, Object> writeResponseDataForRegister(final String apiToken, final String volunteerId,
+                                                           final String name){
         final HashMap<String, Object> jsonObjectResponse = new HashMap<>();
         jsonObjectResponse.put("api_token", apiToken);
         jsonObjectResponse.put("volunteer_id", volunteerId);
         jsonObjectResponse.put("name", name);
-        jsonObjectResponse.put(Constants.MESSAGE, SUCCESS);
-        writeResponseData(response, jsonObjectResponse);
+
+        return jsonObjectResponse;
     }
 
     /**
@@ -137,6 +172,42 @@ public class UserController {
             jsonObjectResponse.put("name", user.getName());
             jsonObjectResponse.put("image_url", ((Volunteer)user).getImage_url());
         }
+        writeResponseData(response, jsonObjectResponse);
+    }
+
+    /**
+     * '/loginwithfb' is called from client to login user using FB.
+     * @param request request from client
+     * @param response response to send to client
+     */
+    @RequestMapping("/loginwithfb")
+    public void loginWithFb(final HttpServletRequest request, final HttpServletResponse response){
+        final JSONObject jsonObjectRequest = Constants.retrieveDataFromRequest(request);
+        //facebook ID is the user ID of users that are using login with facebook
+        final String facebookId = retrieveStringObject(jsonObjectRequest, "facebook_id");
+        final boolean facebookIdExists = userService.checkIfUserIdExists(facebookId);
+        //TODO put some role identification
+        final String role = retrieveStringObject(jsonObjectRequest, "role");
+        final String fcmToken = retrieveStringObject(jsonObjectRequest, "fcm_token");
+        final String message;
+        final Volunteer volunteer;
+        if(facebookIdExists){
+            volunteer = volunteerService.retrieveVolunteerUsingUserId(facebookId);
+            volunteerService.fcmToken(volunteer.getVolunteer_id(), fcmToken);
+            message = NOT_FIRST_TIME;
+        }else{
+            final String email = retrieveStringObject(jsonObjectRequest, "email");
+            volunteer = retrieveVolunteerFromReq(jsonObjectRequest, email, fcmToken, facebookId);
+            //Register user using facebook for the first time
+            register(volunteer);
+            message = FIRST_TIME;
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        final String name = retrieveStringObject(jsonObjectRequest, "name");
+        final HashMap<String, Object> jsonObjectResponse = writeResponseDataForRegister(volunteer.getApiToken(),
+                volunteer.getVolunteer_id(), name);
+        jsonObjectResponse.put(MESSAGE, message);
         writeResponseData(response, jsonObjectResponse);
     }
 

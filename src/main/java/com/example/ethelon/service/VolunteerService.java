@@ -181,4 +181,13 @@ public class VolunteerService {
     public void fcmToken(final String volunteerId, final String fcmToken){
         volunteerDao.fcmToken(volunteerId, fcmToken);
     }
+
+    /**
+     * This function calls the volunteerDao to retrieve the volunteer using the user ID
+     * @param userId ID of the user
+     * @return retrieved volunteer object using user ID
+     */
+    public Volunteer retrieveVolunteerUsingUserId(final String userId){
+        return volunteerDao.retrieveVolunteerUsingUserId(userId);
+    }
 }

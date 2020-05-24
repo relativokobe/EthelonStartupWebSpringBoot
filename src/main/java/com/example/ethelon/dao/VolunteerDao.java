@@ -217,4 +217,26 @@ public class VolunteerDao {
         final Object[] args = new Object[]{fcmToken, volunteerId};
         jdbcTemplate.update(query, args);
     }
+
+    /**
+     * This function retrieves the Volunteer info using the user id
+     * @param userId ID of the user
+     * @return retrieved volunteer object using user ID
+     * TODO add more info in query to retrieve more info
+     */
+    public Volunteer retrieveVolunteerUsingUserId(final String userId){
+        final Object[] args = new Object[]{userId};
+        final String query = "SELECT volunteer_id, api_token FROM users INNER JOIN volunteers ON " +
+                "users.user_id = volunteers.user_id WHERE users.user_id = ?";
+
+        return jdbcTemplate.query(query, args, resultSet -> {
+            Volunteer volunteer = null;
+            if(resultSet.next()){
+                volunteer = new Volunteer();
+                volunteer.setApiToken(resultSet.getString("api_token"));
+                volunteer.setVolunteer_id(resultSet.getString("volunteer_id"));
+            }
+            return volunteer;
+        });
+    }
 }
